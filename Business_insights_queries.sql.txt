@@ -1,0 +1,70 @@
+Business_insights_queries.sql
+-- ==========================================================
+-- CODEORBIT TECH INTERNSHIP — TASK 4: SQL QUERIES
+-- ==========================================================
+
+-- ----------------------------------------------------------
+-- DATABASE SETUP SCHEMA (For Reviewer Reference)
+-- ----------------------------------------------------------
+-- Table 1: Customers (CustomerID, CustomerName, Region)
+-- Table 2: Orders (OrderID, CustomerID, Date, Product, Category, Quantity, Price, TotalSales)
+
+
+-- ==========================================================
+-- QUERY 1: JOIN AND AGGREGATION
+-- ==========================================================
+-- Business Question: What is the total revenue generated per geographic region?
+-- Explanation: This query performs an INNER JOIN between the Orders and Customers tables 
+-- using the shared CustomerID, groups by the region, and sums up the overall revenue.
+
+SELECT 
+    c.Region, 
+    SUM(o.TotalSales) AS TotalRegionalRevenue
+FROM 
+    Orders o
+INNER JOIN 
+    Customers c ON o.CustomerID = c.CustomerID
+GROUP BY 
+    c.Region
+ORDER BY 
+    TotalRegionalRevenue DESC;
+
+
+-- ==========================================================
+-- QUERY 2: GROUPING, AGGREGATION, AND LIMITS
+-- ==========================================================
+-- Business Question: Who are the top 3 highest-spending customers, and where are they from?
+-- Explanation: Joins both tables to link sales amounts back to customer profiles, 
+-- calculating total spending per person and pulling their regional location.
+
+SELECT 
+    c.CustomerName,
+    c.Region,
+    SUM(o.TotalSales) AS TotalAmountSpent
+FROM 
+    Orders o
+INNER JOIN 
+    Customers c ON o.CustomerID = c.CustomerID
+GROUP BY 
+    c.CustomerID, c.CustomerName, c.Region
+ORDER BY 
+    TotalAmountSpent DESC
+LIMIT 3;
+
+
+-- ==========================================================
+-- QUERY 3: BASIC AGGREGATION AND COUNT
+-- ==========================================================
+-- Business Question: What is the total volume of items sold and total orders per category?
+-- Explanation: Evaluates product category performance by aggregating quantities and counting unique transactions.
+
+SELECT 
+    Category, 
+    COUNT(OrderID) AS TotalOrdersPlaced,
+    SUM(Quantity) AS TotalUnitsSold
+FROM 
+    Orders
+GROUP BY 
+    Category
+ORDER BY 
+    TotalUnitsSold DESC;
